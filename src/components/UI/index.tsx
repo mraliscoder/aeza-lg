@@ -1,5 +1,7 @@
+import { useCallback } from "react";
 import styled from "styled-components";
 import { css } from "styled-components";
+import { useTranslation } from "react-i18next";
 
 export const mediaQueries = {
   phone: "@media screen and (min-width: 360px)",
@@ -176,3 +178,56 @@ export const Link = styled.a`
 export const GreyLink = styled(Link)`
   color: #8e8e8e;
 `;
+
+const SwitcherWrapper = styled.p`
+  margin: 0;
+  font-size: 16px;
+  line-height: 20px;
+  color: #8e8e8e;
+
+  ${mediaQueries.desktop} {
+    font-size: 1.6rem;
+    line-height: 2rem;
+  }
+`;
+
+interface LanguageLinkProps {
+  active: boolean;
+}
+
+const LanguageLink = styled(Link)<LanguageLinkProps>`
+  ${mediaQueries.desktop} {
+    font-size: 1.6rem;
+    line-height: 2rem;
+  }
+  color: ${({ active }) => (active ? "#8e8e8e" : "#000000")};
+`;
+
+export function LanguageSwitcher() {
+  const { i18n } = useTranslation();
+
+  const changeLanguage = useCallback(
+    (language: string) => {
+      i18n.changeLanguage(language);
+    },
+    [i18n]
+  );
+
+  return (
+    <SwitcherWrapper>
+      <LanguageLink
+        onClick={() => changeLanguage("ru")}
+        active={i18n.language === "ru"}
+      >
+        рус
+      </LanguageLink>
+      /
+      <LanguageLink
+        onClick={() => changeLanguage("en")}
+        active={i18n.language === "en"}
+      >
+        eng
+      </LanguageLink>
+    </SwitcherWrapper>
+  );
+}

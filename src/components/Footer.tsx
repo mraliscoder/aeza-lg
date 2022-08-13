@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 const Wrapper = styled.div`
   margin-top: 100px;
@@ -33,29 +34,20 @@ const Link = styled.a`
 `;
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <Wrapper>
       <Links>
-        <LinkWrapper>
-          <Link href="https://aeza.net" target="_blank">
-            сайт
-          </Link>
-        </LinkWrapper>
-        <LinkWrapper>
-          <Link href="https://my.aeza.net" target="_blank">
-            биллинг
-          </Link>
-        </LinkWrapper>
-        <LinkWrapper>
-          <Link href="https://t.me/aezahost" target="_blank">
-            телеграм
-          </Link>
-        </LinkWrapper>
-        <LinkWrapper>
-          <Link href="https://vk.com/aezahost" target="_blank">
-            вконтакте
-          </Link>
-        </LinkWrapper>
+        {t<any, any>("links", { returnObjects: true }).map(
+          ({ title, url }: any) => (
+            <LinkWrapper key={url}>
+              <Link href={url} target="_blank">
+                {title}
+              </Link>
+            </LinkWrapper>
+          )
+        )}
       </Links>
     </Wrapper>
   );

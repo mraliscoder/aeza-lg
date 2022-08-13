@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 import {
   mediaQueries,
@@ -70,13 +71,11 @@ const commands = {
 };
 
 interface RunCommandProps {
-  selectedLocation: {
-    name: string;
-    code: string;
-  };
+  selectedLocation: string;
 }
 
 export default function RunCommand({ selectedLocation }: RunCommandProps) {
+  const { t } = useTranslation();
   const [isLoading, setLoading] = React.useState(false);
   const [selectedCommand, setCommand] = React.useState(commands.ping);
   const [resource, setResource] = React.useState("");
@@ -85,18 +84,15 @@ export default function RunCommand({ selectedLocation }: RunCommandProps) {
   const formSubmit = React.useCallback(() => {
     setLoading(true);
 
-    fetch(
-      `https://${selectedLocation.code}.lg.aeza.net/run/${selectedCommand}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          address: resource,
-        }),
-      }
-    )
+    fetch(`https://${selectedLocation}.lg.aeza.net/run/${selectedCommand}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        address: resource,
+      }),
+    })
       .then((res) => res.json())
       .then((res) => {
         if (res.data) {
@@ -120,8 +116,7 @@ export default function RunCommand({ selectedLocation }: RunCommandProps) {
   return (
     <Wrapper>
       <Texts>
-        <Title>выполнение команд</Title>
-        {/* <Description>ыыыы</Description> */}
+        <Title>{t("run.title")}</Title>
       </Texts>
       <form
         onSubmit={(e) => {
@@ -130,7 +125,7 @@ export default function RunCommand({ selectedLocation }: RunCommandProps) {
         }}
       >
         <InputContainer>
-          <Label>команда</Label>
+          <Label>{t("run.command")}</Label>
           <Select
             value={selectedCommand}
             onChange={(e) => setCommand(e.target.value)}
@@ -144,7 +139,7 @@ export default function RunCommand({ selectedLocation }: RunCommandProps) {
           </Select>
         </InputContainer>
         <InputContainer>
-          <Label>адрес ресурса (IPv4/IPv6/Host)</Label>
+          <Label>{t("run.resource")}</Label>
           <Input
             type="text"
             placeholder="aeza.net"
@@ -159,13 +154,13 @@ export default function RunCommand({ selectedLocation }: RunCommandProps) {
           style={{ marginTop: "24px" }}
           type="submit"
         >
-          выполнить
+          {t("run.start")}
         </Button>
       </form>
       {response.length > 0 && (
         <Results>
           <Texts>
-            <Title>результат выполнения команды</Title>
+            <Title>{t("run.result")}</Title>
             {/* <Description>ыыыы</Description> */}
           </Texts>
           <Description>

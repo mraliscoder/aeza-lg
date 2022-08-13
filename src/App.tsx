@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense } from "react";
 import { createGlobalStyle } from "styled-components";
+import { useTranslation } from "react-i18next";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -21,21 +22,6 @@ html {
 }
 `;
 
-const locations = [
-  {
-    code: "msk",
-    name: "Россия (ММТС-9)",
-  },
-  {
-    code: "de",
-    name: "Германия (Combahton)",
-  },
-  {
-    code: "at",
-    name: "Австрия (Interxion)",
-  },
-];
-
 declare global {
   interface Window {
     initUI(): void;
@@ -51,12 +37,14 @@ declare global {
   }
 }
 
+const locations = ["msk", "de", "at"];
+
 function App() {
   const [userIp, setIp] = React.useState("");
-  const [selectedLocation, setLocation] = React.useState(0);
+  const [selectedLocation, setLocation] = React.useState("msk");
 
   useEffect(() => {
-    fetch(`https://${locations[selectedLocation].code}.lg.aeza.net/info`)
+    fetch(`https://${selectedLocation}.lg.aeza.net/info`)
       .then((res) => res.json())
       .then((res) => setIp(res.ip))
       .catch((e) => console.error(e));
@@ -66,16 +54,14 @@ function App() {
     if (window && window.servers !== undefined) {
       if (window.s.isTestPointsAdded()) {
         window.s.setSelectedServer(
-          window.servers.find(
-            ({ name }) => name === locations[selectedLocation].code
-          )
+          window.servers.find(({ name }) => name === selectedLocation)
         );
       }
     }
   }, [selectedLocation]);
 
   return (
-    <>
+    <Suspense fallback="loading">
       <GlobalStyle />
       <Header />
       <Hero
@@ -90,15 +76,15 @@ function App() {
         <SpeedTest />
         <Row>
           <Column desktopSize={6}>
-            <RunCommand selectedLocation={locations[selectedLocation]} />
+            <RunCommand selectedLocation={selectedLocation} />
           </Column>
           <Column desktopSize={6}>
-            <TestFiles selectedLocation={locations[selectedLocation]} />
+            <TestFiles selectedLocation={selectedLocation} />
           </Column>
         </Row>
       </Container>
       <Footer />
-    </>
+    </Suspense>
   );
 }
 

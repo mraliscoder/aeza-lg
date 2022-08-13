@@ -1,5 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import { useTranslation } from "react-i18next";
 
 import {
   mediaQueries,
@@ -115,12 +116,9 @@ interface HeroProps {
   userIp: string;
   image?: any;
   mobileImage?: any;
-  selectedLocation: number;
-  locations: {
-    name: string;
-    code: string;
-  }[];
-  setLocation: React.Dispatch<React.SetStateAction<number>>;
+  selectedLocation: string;
+  locations: string[];
+  setLocation: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function Hero({
@@ -131,41 +129,41 @@ export default function Hero({
   selectedLocation,
   setLocation,
 }: HeroProps) {
+  const { t } = useTranslation();
   const changeLocation = React.useCallback(
-    (location: number) => {
+    (location: string) => {
       const button = document.getElementById("startStopBtn");
 
       if (button?.classList?.contains("running")) {
-        alert("Нельзя изменить локацию, если у вас запущен спидтест");
+        alert(t("hero.error"));
         return;
       }
 
       setLocation(location);
     },
-    [setLocation]
+    [setLocation, t]
   );
 
   return (
     <Container>
       <Wrapper image={image} mobileImage={mobileImage}>
         <Texts>
-          <Title>looking glass</Title>
+          <Title>{t("hero.title")}</Title>
           <Description>
-            Проверьте нашу сеть перед покупкой услуг: traceroute, ping,
-            speedtest и тестовые файлы
+            {t("hero.description")}
             <br />
             <br />
-            Ваш адрес: {userIp.length === 0 ? "..." : userIp}
+            {t("hero.ip")}: {userIp.length === 0 ? "..." : userIp}
           </Description>
         </Texts>
         <Tabs>
-          {locations.map(({ name, code }, index) => (
+          {locations.map((code) => (
             <Tab
               key={code}
-              onClick={() => changeLocation(index)}
-              active={selectedLocation === index}
+              onClick={() => changeLocation(code)}
+              active={selectedLocation === code}
             >
-              {name}
+              {t(`locations.${code}`)}
             </Tab>
           ))}
         </Tabs>

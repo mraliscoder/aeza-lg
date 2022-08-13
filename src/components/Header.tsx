@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
-import { mediaQueries, Container } from "./UI";
+import { mediaQueries, Container, LanguageSwitcher } from "./UI";
 
 import logo from "../images/logo.svg";
 
@@ -28,13 +29,14 @@ const Wrapper = styled.div<ScrolledBlock>`
 
 const InnerContainer = styled.div<ScrolledBlock>`
   padding: 4px 5px;
+  display: grid;
+  grid-template-columns: 20% 60% 20%;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 
   ${mediaQueries.desktop} {
     padding: 7px 12px;
-    flex-direction: row;
     border-bottom: 1px solid
       ${({ scrolled }) => (scrolled ? "#E1E1E1" : "transparent")};
   }
@@ -46,7 +48,12 @@ const Logo = styled.img`
 `;
 
 const Links = styled.div`
-  display: flex;
+  display: none;
+  margin-right: 48px;
+
+  ${mediaQueries.desktop} {
+    display: flex;
+  }
 `;
 
 const Link = styled.a`
@@ -85,7 +92,12 @@ const Link = styled.a`
   }
 `;
 
+const RightSection = styled.div`
+  display: flex;
+`;
+
 export default function Header() {
+  const { t } = useTranslation();
   const [isScrolled, setScrolled] = React.useState(false);
 
   React.useEffect(() => {
@@ -109,21 +121,21 @@ export default function Header() {
     <Wrapper scrolled={isScrolled}>
       <Container>
         <InnerContainer scrolled={isScrolled}>
-          <Logo src={logo} />
-          <Links>
-            <Link href="https://aeza.net" target="_blank">
-              сайт
-            </Link>
-            <Link href="https://my.aeza.net" target="_blank">
-              биллинг
-            </Link>
-            <Link href="https://t.me/aezahost" target="_blank">
-              телеграм
-            </Link>
-            <Link href="https://vk.com/aezahost" target="_blank">
-              вконтакте
-            </Link>
-          </Links>
+          <a href="https://aeza.net">
+            <Logo src={logo} />
+          </a>
+          <RightSection>
+            <Links>
+              {t<any, any>("links", { returnObjects: true }).map(
+                ({ title, url }: any) => (
+                  <Link key={url} href={url} target="_blank">
+                    {title}
+                  </Link>
+                )
+              )}
+            </Links>
+            <LanguageSwitcher />
+          </RightSection>
         </InnerContainer>
       </Container>
     </Wrapper>

@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 
 import {
@@ -36,28 +37,27 @@ const Input = styled(BaseInput)`
 `;
 
 interface TestFilesProps {
-  selectedLocation: {
-    name: string;
-    code: string;
-  };
+  selectedLocation: string;
 }
 
 export default function TestFiles({ selectedLocation }: TestFilesProps) {
+  const { t } = useTranslation();
+
   const files = [
     {
-      name: "10 МБ",
+      name: `10 ${t("testFiles.mb")}`,
       size: "10MB",
     },
     {
-      name: "100 МБ",
+      name: `100 ${t("testFiles.mb")}`,
       size: "100MB",
     },
     {
-      name: "1 ГБ",
+      name: `1 ${t("testFiles.gb")}`,
       size: "1GB",
     },
     {
-      name: "10 ГБ",
+      name: `10 ${t("testFiles.gb")}`,
       size: "10GB",
     },
   ];
@@ -65,21 +65,17 @@ export default function TestFiles({ selectedLocation }: TestFilesProps) {
   return (
     <div>
       <Texts>
-        <Title>тестовые файлы</Title>
-        <Description>
-          протестируйте скорость загрузки с вашего сервера
-        </Description>
+        <Title>{t("testFiles.title")}</Title>
+        <Description>{t("testFiles.description")}</Description>
       </Texts>
       {files.map(({ name, size }) => (
         <InputContainer key={size}>
-          <Link
-            href={`https://${selectedLocation.code}.lg.aeza.net/files/${size}`}
-          >
-            {`тестовый файл ${name}`}
+          <Link href={`https://${selectedLocation}.lg.aeza.net/files/${size}`}>
+            {`${t("testFiles.testFile")} ${name}`}
           </Link>
           <Input
             disabled
-            value={`wget -O /dev/null https://${selectedLocation.code}.lg.aeza.net/files/${size}`}
+            value={`wget -O /dev/null https://${selectedLocation}.lg.aeza.net/files/${size}`}
           />
         </InputContainer>
       ))}

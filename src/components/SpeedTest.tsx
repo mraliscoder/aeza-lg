@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 import { mediaQueries, Button as BaseButton } from "./UI";
 
@@ -90,42 +91,60 @@ const ButtonContainer = styled.div`
 `;
 
 export default function SpeedTest() {
+  const { t } = useTranslation();
+
   React.useEffect(() => {
     window.initUI();
+
+    const button = document.getElementById("startStopBtn")!;
+    var observer = new MutationObserver(function (event) {
+      if (button.classList.contains("running")) {
+        button.innerText = t("speedtest.stop");
+      } else {
+        button.innerText = t("speedtest.start");
+      }
+    });
+
+    observer.observe(button, {
+      attributes: true,
+      attributeFilter: ["class"],
+      childList: false,
+      characterData: false,
+    });
   }, []);
 
   return (
     <Wrapper>
-      <Title>проверка скорости</Title>
+      <Title>{t("speedtest.title")}</Title>
       <Meters>
         <InfoMeter>
-          <MeterName>Скачивание</MeterName>
+          <MeterName>{t("speedtest.download")}</MeterName>
           <Canvas id="dlMeter" />
           <MeterValue id="dlText">0.00</MeterValue>
-          <Unit>Мбит/с</Unit>
+          <Unit>{t("speedtest.mbits")}</Unit>
         </InfoMeter>
         <InfoMeter>
-          <MeterName>Загрузка</MeterName>
+          <MeterName>{t("speedtest.upload")}</MeterName>
           <Canvas id="ulMeter" />
           <MeterValue id="ulText">0.00</MeterValue>
-          <Unit>Мбит/с</Unit>
+          <Unit>{t("speedtest.mbits")}</Unit>
         </InfoMeter>
         <InfoMeter>
-          <MeterName>Пинг</MeterName>
+          <MeterName>{t("speedtest.ping")}</MeterName>
           <Canvas id="pingMeter" />
           <MeterValue id="pingText">0.00</MeterValue>
-          <Unit>мс</Unit>
+          <Unit>{t("speedtest.ms")}</Unit>
         </InfoMeter>
         <InfoMeter>
-          <MeterName>Джиттер</MeterName>
+          <MeterName>{t("speedtest.jitter")}</MeterName>
           <Canvas id="jitMeter" />
           <MeterValue id="jitText">0.00</MeterValue>
-          <Unit>мс</Unit>
+          <Unit>{t("speedtest.ms")}</Unit>
         </InfoMeter>
       </Meters>
       <ButtonContainer>
         <Button as="button" id="startStopBtn" onClick={window.startStop}>
-          запустить
+          {t("speedtest.start")}
         </Button>
       </ButtonContainer>
     </Wrapper>
